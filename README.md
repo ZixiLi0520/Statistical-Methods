@@ -1,2 +1,2 @@
 # Statistical-Methods
-Lecture notes of STAT 22000
+Lecture notes and homework of STAT 22000
