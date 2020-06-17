@@ -1,2 +1,2 @@
 # Statistical-Methods
-Lecture notes and homework of STAT 22000
+This repository is created for the studies of STAT 22000 Statistical Methods and Applications. 
