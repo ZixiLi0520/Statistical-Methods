@@ -38,14 +38,18 @@ opts_chunk$set(size='small')
 Here I plot a histogram for the variable Edu2006 in density scale.
 
 ```{r fig.width=6, fig.height=2.5, fig.align='center'}
-histogram(~ Edu2006, data=NLSY, width=2, xlab="Edu2006")
+histogram(~ Edu2006, data=NLSY, width=1, 
+          xlab="Years of Education Completed by 2006")
 ```
+
+From the above picture we can see there are two peaks at 12 and 16.
 
 # (b)
 Here I plot two histograms for the variable Edu2006 of females and males.
 
 ```{r fig.width=6, fig.height=3.5, fig.align='center'}
-histogram(~Edu2006 | Gender, data=NLSY, width=2, xlab="Edu2006",layout=c(1,2))
+histogram(~Edu2006 | Gender, data=NLSY, width=1, 
+          xlab="Years of Education Completed by 2006",layout=c(1,2))
 ```
 
 Here I export the favorite summaries (mean, SD, five-number summary) for Edu2006 of males and females.
@@ -59,21 +63,22 @@ From the histogram and the summary, males and females in the data set have the s
 # (c)
 Here I make a side-by-side boxplot comparing the education levels of males and females.
 
-```{r fig.width=6, fig.height=2.5, fig.align='center'}
-bwplot(Edu2006 ~ Gender, data=NLSY)
+```{r fig.width=6, fig.height=3, fig.align='center'}
+bwplot(Edu2006 ~ Gender, ylab="Years of Education Completed by 2006",data=NLSY)
 ```
 
-The histogram gives a good sense of the distribution (the overall shape) of the variable Edu2006 but the boxplot does not.
+The histogram gives a good sense of the distribution (the overall shape) and the two peaks of the variable Edu2006 but the boxplot does not.
 
 # (d)
 Here I make two histograms comparing the Income2005 of males and females.
 ```{r fig.width=6, fig.height=4, fig.align='center'}
-histogram(~Income2005 | Gender, data=NLSY, width=10, xlab="Income2005", layout=c(1,2)) 
+histogram(~Income2005 | Gender, data=NLSY, width=10, xlab="Income in 2005 ($1000)",
+          layout=c(1,2)) 
 ```
 
 Here I make a side-by-side boxplot comparing the Income2005 of males and females.
 ```{r fig.width=6, fig.height=3, fig.align='center'}
-bwplot(Income2005 ~ Gender, data=NLSY)
+bwplot(Income2005 ~ Gender, ylab="Income in 2005 ($1000)", data=NLSY)
 ```
 
 Here I export the favorite summaries comparing the Income2005 of males and females.
@@ -88,12 +93,13 @@ From the standard deviation we know that males had a higher variability in their
 # (e)
 Here I make a side-by-side boxplot comparing the logarithm of Income2005 of males and females.
 ```{r fig.width=6, fig.height=3, fig.align='center'}
-bwplot(log(Income2005) ~ Gender, data=NLSY)
+bwplot(log(Income2005) ~ Gender, ylab="log of Income in 2005 ($1000)", data=NLSY)
 ```
 
 Here I make two histograms comparing the logarithm of Income2005 of males and females.
 ```{r fig.width=6, fig.height=4, fig.align='center'}
-histogram(~log(Income2005) | Gender, data=NLSY, width=0.5, xlab="log(Income2005)", layout=c(1,2)) 
+histogram(~log(Income2005) | Gender, data=NLSY, width=0.5, 
+          xlab="log of Income in 2005 ($1000)", layout=c(1,2)) 
 ```
 
 The distributions after the log transformation is left skewed.
@@ -104,7 +110,8 @@ Here I split the data by the levels of Edu2006, and make a side-by-side boxplot 
 NLSY$Edu2006.fac = factor(NLSY$Edu2006, labels = paste(6:20,"yr edu"))
 ```
 ```{r fig.width=6, fig.height=5, fig.align='center'}
-bwplot(log(Income2005) ~ Gender | Edu2006.fac, data=NLSY)
+bwplot(log(Income2005) ~ Gender | Edu2006.fac, data=NLSY, 
+       ylab="log of Income in 2005 ($1000)")
 ```
 
 From the above boxplot we know men earn more than women, even after adjusted for their education level.
@@ -112,37 +119,46 @@ From the above boxplot we know men earn more than women, even after adjusted for
 # (g)
 Here I make a scatter plot between AFQT and Income2005.
 ```{r fig.width=6, fig.height=3, fig.align='center'}
-qplot(AFQT, Income2005, data=NLSY, xlab="AFQT", ylab="Income2005")
+qplot(AFQT, Income2005, data=NLSY, 
+      xlab="Percentile Score on AFQT", 
+      ylab="Income in 2005 ($1000)")
 ```
 
 Here I make a scatter plot between AFQT and logarithm of Income2005.
 ```{r fig.width=6, fig.height=3, fig.align='center'}
-qplot(AFQT, log(Income2005), data=NLSY, xlab="AFQT", ylab="log(Income2005)")
+qplot(AFQT, log(Income2005), data=NLSY, 
+      xlab="Percentile Score on AFQT", 
+      ylab="log of Income in 2005 ($1000)")
 ```
 
 1. The Income2005 had a weak positive association with AFQT.
 2. The variability of Income2005 had a positive association with AFQT.
-3. The variability of the logarithm of Income2005 had a positive association with AFQT.
+3. The variability of the logarithm of Income2005 doesn't seem to change with AFQT.
 
 # (h)
 Here I make a color-coded scatterplot between AFQT and Income2005, and the color of points represents the Gender of the subject.
 ```{r fig.width=6, fig.height=3, fig.align='center'}
-qplot(AFQT, log(Income2005), data=NLSY, xlab="AFQT", ylab="log(Income2005)",color=Gender)
+qplot(AFQT, log(Income2005), data=NLSY, 
+      xlab="Percentile Score on AFQT", 
+      ylab="log of Income in 2005 ($1000)",color=Gender)
 ```
 
 Here I make two separate scatterplots between AFQT and Income2005 for men and women.
 ```{r fig.width=6, fig.height=3, fig.align='center'}
-qplot(AFQT, log(Income2005), data=NLSY, xlab="AFQT", ylab="log(Income2005)",facets = ~Gender)
+qplot(AFQT, log(Income2005), data=NLSY, 
+      xlab="Percentile Score on AFQT", 
+      ylab="log of Income in 2005 ($1000)",facets = ~Gender)
 ```
 
-1. For females, the logarithm of Income2005 had a positive association with AFQT, and the variability of the logarithm of Income2005 also had a positive association with AFQT. For males, the results are the same: the logarithm of Income2005 had a positive association with AFQT, and the variability of the logarithm of Income2005 also had a positive association with AFQT.
+1. For females, the logarithm of Income2005 had a positive association with AFQT, but the variability of the logarithm of Income2005 doesn't seem to change with AFQT. For males, the results are the same: the logarithm of Income2005 had a positive association with AFQT, but the variability of the logarithm of Income2005 doesn't seem to change with AFQT.
 2. Comparing men and women with similar intelligence test score percentiles, men earn more than women in general.
 
 # (i)
 Here I make color-coded scatterplots between AFQT and Income2005 for each level of years of education, using the color of points to represent the Gender of the subjects.
 ```{r fig.width=6, fig.height=5, fig.align='center'}
-qplot(AFQT, log(Income2005), data=NLSY, xlab="AFQT", ylab="log(Income2005)",
-      color=Gender, facets=~Edu2006.fac)
+qplot(AFQT, log(Income2005), data=NLSY, 
+      xlab="Percentile Score on AFQT", 
+      ylab="log of Income in 2005 ($1000)",  color=Gender, facets=~Edu2006.fac)
 ```
 
 Comparing men and women with the same years of education and with similar intelligence test score percentiles, men earn more than women in general.
