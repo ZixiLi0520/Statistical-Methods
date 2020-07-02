@@ -43,7 +43,7 @@ tally(~marital+lowbirthweight, data=nc, margins=FALSE)
  
 # (b)
 The proportion of babies who were born out of marriage is:
-$$\frac{49+564}{49+564+61+325}\times 100\% = 61.36 \%$$
+$$\frac{61+325}{49+564+61+325}\times 100\% = 38.64 \%$$
 The proportion of babies who were born with a low birth wight is:
 $$\frac{49+61}{49+564+61+325}\times 100\% = 11.01 \%$$
 
