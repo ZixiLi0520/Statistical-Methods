@@ -1,0 +1,118 @@
+---
+title: 'STAT 22000: Homework 7'
+author: "Zixi Li"
+fontsize: 12pt
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
+mainfont: Times New Roman
+header-includes: \usepackage{pdfpages}
+geometry: margin=0.75in
+fig_crop: no
+---
+
+```{r setup, include=FALSE}
+library(MASS)
+library(GGally)
+library(openintro)
+library(mosaic)
+library(knitr)
+#library(tidyverse)
+#library(ggformula)
+#library(gridExtra)
+library(broom)
+options(width=70, digits=6, scipen=8)
+def.chunk.hook  <- knitr::knit_hooks$get("chunk")
+knitr::knit_hooks$set(chunk = function(x, options) {
+  x <- def.chunk.hook(x, options)
+  ifelse(options$size != "normalsize", paste0("\\", options$size,"\n\n", x, "\n\n \\normalsize"), x)
+})
+# Set R output size a bit smaller than default
+opts_chunk$set(size='small') 
+```
+# Problem 1 Speeding on the I-5
+# (a)
+Based on the following codes, we know the percentage of passenger vehicles travel slower than 80 miles/hour is 0.939203
+```{r}
+pnorm(80, m=72.6, s=4.78)
+```
+
+# (b)
+Based on the following codes, we know the percentage of passenger vehicles travel between 60 and 80 miles/hour is  0.935008
+```{r}
+pnorm(80, m=72.6, s=4.78)-pnorm(60, m=72.6, s=4.78)
+```
+
+# (c)
+Based on the following codes, we know the speed of the fastest 5% of passenger vehicles is  80.4624
+```{r}
+qnorm(0.95, m=72.6, s=4.78)
+```
+
+# (d)
+Based on the following codes, we know the percentage of the passenger vehicles travel above the speed limit is 0.706756
+```{r}
+1-pnorm(70, m=72.6, s=4.78)
+```
+
+# Problem2 Multiple-choice quiz
+# (a)
+Based on the following codes, the probability is  0.0878906
+```{r}
+dbinom(3, size=5, p=0.25)
+```
+
+# (b)
+Based on the following codes, the probability is  0.103516
+```{r}
+dbinom(3, size=5, p=0.25)+dbinom(4, size=5, p=0.25)+
+  dbinom(5, size=5, p=0.25)
+```
+
+# (c)
+$Mean=5\times 0.25 = 1.25$
+
+# (d)
+$SD=\sqrt{5\times0.25\times(1-0.25)}=0.9682$
+
+# Problem3 Roll the dice
+# (a)
+It's more likely that the ace comes up 20\% or more of the time in 60 rolls. Because the mean value is 10 and 100, and 12 is closer to 10 than 120 is to 100.The following codes also proved this conclusion.
+```{r}
+1-pbinom(11, size=60, p=1/6)
+```
+```{r}
+1-pbinom(119, size=600, p=1/6)
+```
+
+# (b)
+It's more likely to get 8 to 12 aces in 60 rolls. Because for binomial distribution, the SD will be relatively smaller compared to n as n goes up, which means the shape of the distribution will be sharper as n goes up, such that 98 to 102 only occupy a very small area.
+
+
+# Problem4 Using binomial distribution to check problem3
+# (a)
+For 60 rolls, $Mean=60\times 1/6=10$, $SD=\sqrt{60\times1/6\times(1-1/6)}=2.887$, $Z(8)=(8-10)/2.887=-0.693$, $Z(12)=(12-10)/2.887=0.693$
+
+For 600 rolls, $Mean=600\times 1/6=100$, $SD=\sqrt{600\times1/6\times(1-1/6)}=9.129$, $Z(98)=(98-100)/9.129=-0.219$, $Z(102)=(102-100)/9.129=0.219$
+
+From the z scores we can conclude that it's more likely to get 8 to 12 aces in 60 rolls.
+
+# (b)
+The probability is  0.17335
+```{r}
+pnorm(0.219)-pnorm(-0.219)
+```
+
+# (c)
+The probability is 0.215743
+```{r}
+sum(dbinom(98:102, size=600, p=1/6))
+```
+
+# (d)
+The probability is 0.215743
+```{r}
+pbinom(102, size=600, p=1/6)-pbinom(97, size=600, p=1/6)
+```
