@@ -1,0 +1,258 @@
+---
+title: "STAT 22000 Summer 2020 HW2 Solutions"
+author: "Yibi Huang"
+output: pdf_document
+header-includes:
+  - \usepackage[sol]{optional}
+geometry: margin = .65in
+fontsize: 11pt
+---
+
+```{r echo=F}
+pdf.options(useDingbats = TRUE)
+library(knitr)
+knitr::opts_chunk$set(fig.width=4, fig.height=3, message=F, warning=F, dpi=36)
+```
+
+\opt{hw}{
+Beginners often have trouble loading data sets to R from a file.
+Please refer to Section 3 of Lab \#1: \textcolor{blue}{http://www.stat.uchicago.edu/~yibi/s220/labs/lab01.html}
+about how to change the working directory and load data set from a file.
+
+You can refer to Lab \#2: 
+\textcolor{blue}{http://www.stat.uchicago.edu/~yibi/s220/labs/lab02.html} to find
+the details for R commands you need to make the histograms, boxplots, and scatterplots required below.
+
+
+The data file `NLSY.txt` posted on Canvas along with HW2
+contains data come from the 
+NationalLongitudinal Study of Youth (NLSY), U.S. Bureau of Labor
+Statistics https://www.bls.gov/nls/home.htm.
+The subjects are 1306 American men and 1278 American women between
+the ages of 14 and 22 in 1979. The variables include
+
+* `Gender`
+* `AQFT`: the percentile scores on the Armed Forces Qualifying Test,
+which is designed for evaluating the suitability of military recruits
+but which is also used by researchers as a general intelligence test
+* `Edu2006`: years of education achieved by time of interview in 2006
+* `Income2005`: annual income in thousands of dollars in 2005
+
+The orignal data include more subjects but those with missing values of 
+variables are omitted.
+}
+
+First, let's load the data set to R and load the mosaic library.
+
+```{r loading-data-mosaic, message=FALSE}
+NLSY = read.table("NLSY.txt",header=T)
+library(mosaic)
+```
+
+# (a) 
+\textcolor{red}{[2pts = 1pt for the histogram + 1pt for the comment on the modes of the histogram]}
+
+As `Edu2006` is integer-valued, the natural bandwidth for the histogram is 1.
+
+```{r 1a, cache=TRUE, fig.height=3}
+histogram(~Edu2006, data=NLSY, width=1, xlab="Years of Education Completed by 2006")
+```
+
+The histogram has two peaks at 12 an 16 since most people either finished 
+high school (12 years) or had a college degree (16 years).
+
+# (b) 
+
+\textcolor{red}{[2pts = 1pt for the plot and the summary + 1pt for the comment]}
+
+From the histograms and the data summary below, 
+the education level of males and females were pretty close.
+They have identical five-number summaries 
+and their means for `Edu2006` were pretty close 
+(13.81 years for men and 13.91 years for women.)
+
+```{r 1b, cache=TRUE, fig.height=4}
+favstats(Edu2006 ~ Gender, data=NLSY)
+histogram(~Edu2006 | Gender, data=NLSY, width=1, 
+          xlab="Years of Education by 2006",layout=c(1,2))
+```
+
+
+# (c)
+
+\textcolor{red}{[2pts = 1pt for the boxplot + 1pt for the missing info]}
+The side-by-side boxplot is as follows.
+We are not able to observe the modes at 12 and 16 from the boxplot which
+can be observed in the histogram.
+
+```{r 1c, cache=TRUE, fig.width=3, fig.height=2.5}
+bwplot(Edu2006 ~ Gender, data=NLSY, ylab="Years of Education by 2006")
+```
+
+
+# (d) 
+\textcolor{red}{[4pts in total = 1pt for the plots + 3pts for the comments (1pt each)]}
+
+```{r 1d, cache=TRUE, fig.height=3.5, fig.show='hold', out.width=c('50%', '50%')}
+histogram(~Income2005 | Gender, data=NLSY, width=10, 
+          xlab="Annual Income in 2005 ($1000)",layout=c(1,2))
+bwplot(Income2005 ~ Gender, data=NLSY, ylab="Annual Income in 2005 ($1000)")
+favstats(Income2005 ~ Gender, data=NLSY)
+```
+
+* \textcolor{red}{[1pt]} The distributions of `Income2005` are __right-skewed__ for both gender
+* \textcolor{red}{[1pt]} Males generally had a higher income.
+The mean, Q1, median, and Q3 for males were all higher than those for females.
+* \textcolor{red}{[1pt]} Males' distribution of income also had a higher variability than females'
+as SD was 55.9 thousands of dollars for males and 28.8 thousands of dollars for 
+females. One can also argue that males' histogram had a larger spread
+or the height of the box (IQR) for males' boxplot is higher than that for females.
+
+
+# (e) 
+
+\textcolor{red}{[2pts = 1pt for the plots + 1pt for the left-skewness]}
+
+After the log-transformation, the distribution of `Income2005` become 
+__left-skewed__ (the left tail is longer).
+
+```{r 1e, cache=TRUE, fig.width=4, fig.height=3.5, fig.show='hold', out.width=c('50%', '45%')}
+histogram(~log(Income2005) | Gender, data=NLSY, width=0.5, 
+          xlab="log of Annual Income in 2005 ($1000)",layout=c(1,2))
+bwplot(log(Income2005) ~ Gender, data=NLSY, 
+       ylab="log of Annual Income in 2005 ($1000)")
+```
+
+
+# (f)
+
+\textcolor{red}{[2pts = 1pt for the plots + 1pt for the comparison]}
+
+```{r 1f2, cache=TRUE, fig.width=8, fig.height=3.5}
+NLSY$Edu2006.fac = factor(NLSY$Edu2006, labels = paste(6:20,"yr edu"))
+bwplot(Income2005 ~ Gender | Edu2006.fac, data=NLSY, layout=c(8,2),
+       ylab="Annual Income in 2005 ($1000)")
+```
+
+Taking logarithm might make it easier to tell which gender had a higher income.
+We can see that men had a higher median income
+than women in all the plots. 
+Hence, we can conclude men earned more than women in general, 
+even if they received the same number of years of education.
+
+```{r 1f3, cache=TRUE, fig.width=8, fig.height=3.4}
+bwplot(log(Income2005) ~ Gender | Edu2006.fac, data=NLSY,
+      layout=c(8,2), ylab="log of Annual Income in 2005 ($1000)")
+```
+
+
+# (g)
+
+\textcolor{red}{[4pts in total = 1pt for the plots + 3pts for the comments (1pt each)]}
+
+1. \textcolor{red}{[1pt]} We can see that `Income2005`in general __increases__ with `AQFT`.
+2. \textcolor{red}{[1pt]} The variability of `Income2005` __increases__ with `AQFT`. 
+As `AQFT` gets higher, the spread of `Income2005` also gets higher.
+3. \textcolor{red}{[1pt]} After taking logarithm, the variability of the __logarithm__ of `Income2005`
+doesn't seem to change with `AQFT` 
+as the points scatter in a band of constant width.
+
+The scatter plots are shown below.
+
+```{r 1g, cache=TRUE, fig.show='hold', out.width=c('50%', '50%')}
+qplot(AFQT, Income2005, data=NLSY, shape=I(1),
+      xlab="Percentile Score on the AFQT intelligence Test", 
+      ylab="Annual Income in 2005 ($1000)")
+qplot(AFQT, log(Income2005), data=NLSY, shape=I(1),
+      xlab="Percentile Score on the AFQT intelligence Test",
+      ylab="log of Annual Income in 2005 ($1000)")
+```
+
+
+# (h)
+
+\textcolor{red}{[4pts in total = 1pt for the plots + 3pts for the comments (see below)]}
+
+
+1. \textcolor{red}{[2pts]} From the plot below, the logarithm of 
+`Income2005` increase with `AQFT` for each gender.
+However, the variability of the logarithm of `Income2005`
+doesn't seem th change with `AQFT` as the points just scatter in a band
+of a constant width.
+
+```{r 1h2, cache=TRUE, fig.width=3, fig.width=8}
+qplot(AFQT, log(Income2005), data=NLSY,facets = ~Gender,
+      xlab="Percentile Score on the AFQT intelligence Test",
+      ylab="log of Annual Income in 2005 ($1000)")
+```
+
+2. \textcolor{red}{[1pt]} 
+Comparing points with similar x-values in the plot below,
+we see that blue points (males) tend to have higher y-values than 
+points (females).
+Men generally earned more than women, 
+even if they have similar intellegence test score percentiles.
+
+```{r 1h, fig.width=8, fig.height=3.5, cache=TRUE}
+qplot(AFQT, log(Income2005), data=NLSY, color=Gender,
+      xlab="Percentile Score on the AFQT intelligence Test",
+      ylab="log of Annual Income in 2005 ($1000)")
+```
+
+<!-- 
+__Remark__: (not required) The R code below added regression lines to the plot 
+```{r 1g3} 
+#qplot(AFQT, log(Income2005), data=NLSY, xlab="??", ylab="??",facets = ~Gender)+
+    geom_smooth(method = "lm") 
+
+#qplot(AFQT, log(Income2005), data=NLSY, xlab="??", ylab="??", color=Gender, shape=I(1))+
+    geom_smooth(method = "lm") 
+```
+-->
+
+
+# (i)
+
+\textcolor{red}{[3pts]} In the split-panel scatter plot below, 
+note that points in a single subplot
+were of the same years of education.
+We can compare the annual incomes of males and females
+controlling for `Edu2006` and `AFQT`
+by comparing the y-values of blue points (males) and red points (females)
+with similar x-values in a single subplots as such
+cases had identical `Edu2006` and similar `AFQT` percentiles.
+
+We see that in nearly all of the subplots,
+blue points (males) tend to have higher y-values than 
+points (females).
+We can then conclude that men 
+generally earned more than women, 
+even if they received the same years of education and had
+the same intellegence test score percentiles.
+
+```{r 1i, fig.width=8, fig.height=6, cache=TRUE}
+qplot(AFQT, log(Income2005), data=NLSY,
+      color=Gender, facets=~Edu2006.fac,
+      xlab="Percentile Score on the AFQT intelligence Test",
+      ylab="log of Annual Income in 2005 ($1000)")
+```
+
+
+(Not required.) Adding separate linear regression lines between `log(Income2005)` and `AFQT`
+for men and women in each subplot makes it easier 
+to compare the `log(Income2005)` of the two gender. 
+(A linear regression line between x and y is the straight line that 
+best depicts the linear relationship between x and y in a scatterplot.)
+We can see that the blue lines are almost always above the red lines,
+meaning that males generally had higher `log(Income2005)` than females,
+after adjusting for `Edu2006` and `AFQT.`
+
+```{r 1i2, fig.width=8, fig.height=6, cache=TRUE}
+qplot(AFQT, log(Income2005), data=NLSY,
+      color=Gender, facets=~Edu2006.fac, shape=I(1),
+      xlab="Percentile Score on the AFQT intelligence Test",
+      ylab="log of Annual Income in 2005 ($1000)")+
+  geom_smooth(method="lm")
+```
+
+

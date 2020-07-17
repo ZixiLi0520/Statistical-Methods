@@ -1,0 +1,171 @@
+---
+title: "STAT 22000 2020 Summer HW3 Solutions"
+author: "Yibi Huang"
+output: pdf_document
+geometry: margin = .75in
+fontsize: 12pt
+---
+
+# 1. -- 9 total points
+
+## (1a) 
+\textcolor{red}{[1pt]} Let's first load the NC births data, 
+exclude the case with missing `marital` status,
+and load the `mosaic` library.
+```{r message=FALSE}
+nc = read.csv("https://www.openintro.org/stat/data/csv/ncbirths.csv")
+nc = subset(nc, is.na(marital) == FALSE)
+library(mosaic)
+```
+
+The two way table is
+
+```{r}
+tally(~ marital + lowbirthweight, data=nc)
+```
+
+The R command ``addmargins` adds the marginal totals to 
+the two-way table.
+
+```{r}
+addmargins(tally(~ marital + lowbirthweight, data=nc))
+```
+
+## (1b) 
+\textcolor{red}{[2pts in total, 1pt each]} 
+
+About 
+$\mathbf{386/999\approx0.3864\approx38.6\%}$ of the babies
+were born to unmarried mothers.
+
+About
+$\mathbf{110/999\approx0.110=11\%}$ of the babies
+had low birth weights.
+
+Alternatively, the answers can be computed in R as follows.
+
+```{r cache=TRUE}
+prop.table(tally(~ marital, data=nc))
+prop.table(tally(~ lowbirthweight, data=nc))
+```
+
+
+## (1c) 
+\textcolor{red}{[1pt]} $\mathbf{61/386\approx0.158=15.8\%}.$ 
+Alternatively, we can compute it using the R command:
+
+```{r}
+prop.table(tally(~ marital + lowbirthweight, data=nc),1)
+```
+
+## (1d) 
+\textcolor{red}{[2pts]} The segmented bar chart is as follows.
+
+```{r 1d, fig.width=3, fig.height=2.7, cache=TRUE}
+barchart(tally(~ marital + lowbirthweight, data=nc), horizontal=FALSE)
+```
+
+(Not Required) It would be better to add legend and labels to the barplot(s).
+
+```{r 1d1, fig.width=4, fig.height=2.5, cache=TRUE}
+barchart(tally(~ marital + lowbirthweight, data=nc), 
+         horizontal=FALSE,
+         xlab="Mother",
+         auto.key=list(space="right", title="Baby'sBirth Weight",cex.title=1))
+```
+
+##(1e) 
+\textcolor{red}{[1pt]} 
+
+```{r eval=FALSE, tidy=TRUE}
+mosaicplot(tally(~ marital + lowbirthweight, data=nc), 
+           ylab="Baby's Birth Weight", 
+           xlab="Mother", color=TRUE,main="")
+```
+
+```{r 1e.mosaicplot, fig.width=3, fig.height=2.5, echo=FALSE, cache=TRUE}
+par(mai=c(.56,.56,.1,.01),mgp=c(1.8,.5,0))
+mosaicplot(tally(~ marital + lowbirthweight, data=nc), 
+           ylab="Baby's Birth Weight", 
+           xlab="Mother", color=TRUE, main="")
+```
+
+## (1f) 
+\textcolor{red}{[1pt]} From the mosaic plot, 
+we see babies born to unmarried women had
+a higher percentage of having low birth weights
+than those born to married women.
+
+## (1g) 
+\textcolor{red}{[1pt]} 
+NOT independent because the locations of the segment in the two bars
+do not match or because the unmarried group had 
+a higher percentage of having low birth weight babies.
+
+# 2. -- 10 total points
+
+##(2a) 
+\textcolor{red}{[3pts = 1pt for the table + 2pts for the proportions and the comparisons]}
+
+The two way table with marginal total is
+
+```{r}
+addmargins(tally(~ marital + habit, data=nc))
+```
+
+About $\mathbf{60/613\approx0.098\approx9.8\%}$ 
+  of the married mothers smoked during pregnancy,
+and $\mathbf{66/386\approx0.171\approx17.1\%}$ 
+of the unmarried mothers smoked during pregnancy.
+
+Alternatively, we can compute using the R command:
+```{r}
+prop.table(tally(~ marital + habit, data=nc),1)
+```
+So the unmarried mothers were more likely to smoke during pregnancy.
+
+## (2b)
+```{r}
+ftable(tally(~ habit + marital + lowbirthweight, data=nc))
+prop.table(ftable(tally(~ habit + marital + lowbirthweight, data=nc)),1)
+```
+
+(b-i) \textcolor{red}{[2pts]} The percentages were 
+$42/(42+511)\approx\fbox{7.6\%}$ for married nonsmoking moms, and $50/(50+270)\approx\fbox{15.6\%}$ unmarried nonsmoking moms.
+Married nonsmoking moms were __less likely__ to have
+low-birth-weight babies than unmarried nonsmoking moms.
+
+(b-ii) \textcolor{red}{[2pts]} The percentages were 
+$7/(7+53)\approx\fbox{11.7\%}$ for married smoking moms, and $11/(11+55)\approx\fbox{16.7\%}$ for unmarried smoking moms.
+Married smoking women were __less likely__ to have
+low-birth-weight babies than unmarried smoking women.
+
+(b-iii) \textcolor{red}{[1pt]} After adjusting for smoking status,
+unmariried women still had higher rates of 
+having low-birth-weight babies than married women.
+Out-of-marriage births are still associated with low-birth-weights,
+even after accounting for the effect of smoking.
+
+## (2c) 
+\textcolor{red}{[2pts]} No, this is an observational study.
+Even if we tried to rule out one confounding factor of smoking,
+there can be other confounders like mothers' age, 
+income, or education level that may be 
+associated with mothers' marital status
+and how likely babies may have low birth weights.
+We cannot make a causal conclusion here.
+
+# 3. -- 6 total points
+
+## (3a) 
+\textcolor{red}{[2pts]} Yes. Since subjects were __randomized__ to receive either
+bupropion or a placebo.
+
+## (3b) 
+\textcolor{red}{[2pts]} Yes, the study blocked on whether a subject lived with a smoker.
+
+## (3c) 
+\textcolor{red}{[2pts]} No, since the subjects were __not randomized__ to
+live with a smoker or not to live with a smoker. 
+The comparison between those who lived with a smoker and those
+who didn't is observational and is hence subject to confounding.
