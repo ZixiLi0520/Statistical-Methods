@@ -1,0 +1,122 @@
+---
+title: 'STAT 22000: Homework 10'
+author: "Zixi Li"
+fontsize: 12pt
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
+mainfont: Times New Roman
+header-includes: \usepackage{pdfpages}
+geometry: margin=0.75in
+fig_crop: no
+---
+
+```{r setup, include=FALSE}
+library(MASS)
+library(GGally)
+library(openintro)
+library(mosaic)
+library(knitr)
+#library(tidyverse)
+#library(ggformula)
+#library(gridExtra)
+library(broom)
+options(width=70, digits=6, scipen=8)
+def.chunk.hook  <- knitr::knit_hooks$get("chunk")
+knitr::knit_hooks$set(chunk = function(x, options) {
+  x <- def.chunk.hook(x, options)
+  ifelse(options$size != "normalsize", paste0("\\", options$size,"\n\n", x, "\n\n \\normalsize"), x)
+})
+# Set R output size a bit smaller than default
+opts_chunk$set(size='small') 
+```
+# Problem 1 Find the p-value
+(a)
+Upper one-sided p-value is 0.00771264
+```{r}
+pt(2.6,df=26-1,lower.tail = F)
+```
+
+(b)
+Two-sided p-value is 0.0154253 
+```{r}
+2*pt(2.6,df=26-1,lower.tail = F)
+```
+
+(c)
+Lower one-sided p-value is 0.0209623
+```{r}
+pt(-2.2,df=18-1)
+```
+
+(d)
+Lower one-sided p-value is 0.979038
+```{r}
+pt(2.2,df=18-1)
+```
+
+# Problem 2 Compare different psychological therapies
+# (a)
+The sample mean \( \bar{x} \)=3
+
+The standard deviation $s= 7.32042$
+```{r}
+weightchange=c(1.7, 11.7, -1.4, 0.7, 6.1, -0.8, -0.1, 1.1,
+               2.4, -0.7, -4.0, 12.6, -3.5, 20.9,1.9, 14.9,
+               -9.3, 3.9, 3.5, 2.1, 0.1, 17.1, 1.4, 15.4,
+               -7.6, -0.3, -0.7,1.6, -3.7)
+mean(weightchange)
+sd(weightchange)
+```
+
+# (b)
+$H_0$: $\mu=0$, $H_A$: $\mu>0$, where $\mu$ is the population mean weight gain of girls who received the cognitive behavioral therapy.
+
+# (c)
+$$df=n-1=29-1=28$$
+$$t-statistic = \frac{\bar{x}-\mu_0}{s/\sqrt{n}}=\frac{3-0}{7.32/\sqrt{29}}=2.207$$
+# (d)
+The upper one-sided p-value is 0.0178404, which is larger than the significance level 0.01, so we fail to reject $H_0$, girls' mean weight gain is not significantly higher than 0.
+```{r}
+pt(2.207,df=28,lower.tail = F)
+```
+
+# (e)
+Type 1 error: girls who receive the cognitive behavioral therapy have a 0 mean weight gain but we conclude that the mean weight gain is significantly higher than 0.
+
+Type 2 error: girls who receive the cognitive behavioral therapy have mean wight gain higher than 0 but we fail to reject the null hypothesis.
+
+# (f)
+$H_0$: $\mu=0$, $H_A$: $\mu\neq0$, where $\mu$ is the population mean weight gain of girls who received the cognitive behavioral therapy.
+
+The degree of freedom and t-statistic remain the same. df=28 and t-statistic=2.207
+
+The two-sided p-value = $0.01784\times2=0.03568$
+
+# (g)
+The 95\% t-confidence interval is 2.04841, the corresponding mean weight gain is $3\pm 2.04841\times 7.32/\sqrt{29}=(0.2155, 5.7845)$, thus the true mean change in weight is positive, but possibly as small as 0.2155
+```{r}
+qt(0.05/2, df=28, lower.tail = F)
+```
+
+# (h)
+We can see the t-statistic, the df, the p-values and the 95\% confidence level all agree with our calculation in (c)(d)(f)(g).
+```{r}
+cognitive = c(1.7, 11.7, -1.4, 0.7, 6.1, -0.8, -0.1, 1.1,
+               2.4, -0.7, -4.0, 12.6, -3.5, 20.9,1.9, 14.9,
+               -9.3, 3.9, 3.5, 2.1, 0.1, 17.1, 1.4, 15.4,
+               -7.6, -0.3, -0.7,1.6, -3.7)
+t.test(cognitive, alternative = "greater")
+t.test(cognitive, alternative = "two.sided")
+```
+
+# Problem 3 True or faulse 
+(a) is false. Increasing the significance level will increase the probability of making a Type 1 error.
+
+(b) is true.
+
+(c) is false. Failure to reject $H_0$ means we don't have strong evidence to reject it, we can't be sure that $\mu=5$. 
+
+
