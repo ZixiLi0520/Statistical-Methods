@@ -1,0 +1,50 @@
+---
+title: 'STAT 22000: Homework 12'
+author: "Zixi Li"
+fontsize: 12pt
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
+mainfont: Times New Roman
+header-includes: \usepackage{pdfpages}
+geometry: margin=0.75in
+fig_crop: no
+---
+
+```{r setup, include=FALSE}
+library(MASS)
+library(GGally)
+library(openintro)
+library(mosaic)
+library(knitr)
+#library(tidyverse)
+#library(ggformula)
+#library(gridExtra)
+library(broom)
+options(width=70, digits=6, scipen=8)
+def.chunk.hook  <- knitr::knit_hooks$get("chunk")
+knitr::knit_hooks$set(chunk = function(x, options) {
+  x <- def.chunk.hook(x, options)
+  ifelse(options$size != "normalsize", paste0("\\", options$size,"\n\n", x, "\n\n \\normalsize"), x)
+})
+# Set R output size a bit smaller than default
+opts_chunk$set(size='small') 
+```
+# Problem 1 Birth weights of babies and smoking of mothers
+# (a) 
+Here I make a side-by-side histogram and a side-by-side boxplot comparing the weights of full term babies born to smoking and non-smoking mothers with the following R codes:
+```{r fig.width=5, fig.height=3.5, fig.align='center'}
+nc = read.csv("https://www.openintro.org/stat/data/csv/ncbirths.csv")
+nc.full = subset(nc, premie=="full term")
+histogram(~weight | habit, data=nc.full, layout=c(1,2), width=0.5,
+          xlab="Birth Weight of Full Term Babies (lbs)") 
+bwplot(weight ~ habit, data=nc.full, ylab="Birth Weight of Full Term
+       Babies(lbs)", xlab="Mother")
+```
+
+From the above histogram and boxplot, we can see the sample size is big enough, and the data are not strongly skewed, and there aren't many outliers, such it's appropiate to use the two-sample t-tests and t-intervals.
+
+# (b)
+
