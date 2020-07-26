@@ -1,0 +1,71 @@
+---
+title: 'STAT 22000: Final Part 3 '
+author: "Zixi Li"
+fontsize: 12pt
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
+header-includes: \usepackage{pdfpages}
+geometry: margin=0.75in
+fig_crop: no
+---
+
+```{r setup, include=FALSE, message =FALSE}
+#library(MASS)
+#library(GGally)
+#library(openintro)
+library(mosaic)
+library(knitr)
+#library(tidyverse)
+#library(ggformula)
+#library(gridExtra)
+library(broom)
+options(width=70, digits=6, scipen=8)
+def.chunk.hook  <- knitr::knit_hooks$get("chunk")
+knitr::knit_hooks$set(chunk = function(x, options) {
+  x <- def.chunk.hook(x, options)
+  ifelse(options$size != "normalsize", paste0("\\", options$size,"\n\n", x, "\n\n \\normalsize"), x)
+})
+# Set R output size a bit smaller than default
+opts_chunk$set(size='small') 
+# Set the default to NOT display R code
+knitr::opts_chunk$set(echo = TRUE, fig.width=4, fig.height=3.5)
+nc = read.csv("https://www.openintro.org/stat/data/csv/ncbirths.csv")
+```
+
+## Q1 
+With the following R codes, we know that
+
+* the number of cases that the mother is married: 613
+* the number of cases that the mother is unmarried: 386
+* the averae age of the married mothers in the data: 29.14
+* the averae age of the unmarried mothers in the data: 23.56
+* the standard deviation (SD) of the age of the married mothers in the data: 5.52
+* the standard deviation (SD) of the age of the unmarried mothers in the data: 5.66
+
+```{r Q1}
+favstats(mage ~ marital, data=nc)
+```
+
+## Q2
+With $df=min(613-1,386-1)=385$, the critical value for 95\% CI is $t^{*} \approx 1.966$.
+
+```{r Q2}
+qt(0.05/2, df=385, lower.tail = F)
+```
+
+The 95\% CI for the mean difference $\mu_m-\mu_n$ is
+
+$$\bar{x}_{m}-\bar{x}_{n} \pm t^{*} \sqrt{\frac{s_{m}^{2}}{n_{m}}+\frac{s_{n}^{2}}{n_{n}}} \approx 29.14-23.56 \pm 1.966 \sqrt{\frac{(5.52)^{2}}{613}+\frac{(5.66)^{2}}{386}}\approx (4.864,6.296)$$
+Here the subscript "m" represents married, "n" represents not married.
+
+## Q3
+The age of married mothers is independent with the age of unmarried mothers.
+
+The sample size $n_m=613$ and $n_n=386$ are both sufficiently large so that the t-approximation is good even when the data are clearly skewed. 
+
+
+
+
